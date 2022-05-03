@@ -1,9 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
+
+	"github.com/josephtanderson/live-roller/api/httpHelpers"
 )
 
 type User struct {
@@ -11,26 +11,14 @@ type User struct {
 	Age  string `json:"age"`
 }
 
-func toJson(x User) string {
-	byteArray, err := json.Marshal(x)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return string(byteArray)
-}
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-}
-
 func main() {
 
 	newUser := User{Name: "Joseph", Age: "30"}
 
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		w.Header().Set("content-Type", "application/json")
-		w.Write([]byte(toJson(newUser)))
+		w.Write([]byte(httpHelpers.RespondWithJson(newUser)))
 	})
 	http.ListenAndServe(":8080", nil)
 }

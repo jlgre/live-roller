@@ -1,3 +1,3 @@
-module github.com/jlgre/live-roller/api
+module github.com/josephtanderson/live-roller/api
 
 go 1.18
