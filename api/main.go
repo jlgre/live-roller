@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
+	"github.com/jlgre/live-roller/api/httpHelpers"
 	"github.com/joho/godotenv"
 )
 
@@ -14,16 +14,14 @@ type User struct {
 	Age  string `json:"age"`
 }
 
-func toJson(x User) string {
-	byteArray, err := json.Marshal(x)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return string(byteArray)
-}
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+type Char struct {
+	Name string `json:"name"`
+	Str  int    `json:"str"`
+	Dex  int    `json:"dex"`
+	Con  int    `json:"con"`
+	Int  int    `json:"int"`
+	Wis  int    `json:"wis"`
+	Cha  int    `json:"cha"`
 }
 
 func main() {
@@ -32,12 +30,11 @@ func main() {
 		fmt.Println("Error loading .env file")
 	}
 	port := os.Getenv("PORT")
+	host := os.Getenv("HOST")
 	newUser := User{Name: "Joseph", Age: "30"}
+	newChar := Char{Name: "Examplus", Str: 10, Dex: 10, Con: 10, Int: 10, Wis: 10, Cha: 10}
 
-	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
-		w.Header().Set("content-Type", "application/json")
-		w.Write([]byte(toJson(newUser)))
-	})
+	httpHelpers.HttpRespond("/users", newUser, host)
+	httpHelpers.HttpRespond("/char", newChar, host)
 	http.ListenAndServe(port, nil)
 }
