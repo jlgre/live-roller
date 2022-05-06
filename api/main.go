@@ -34,7 +34,15 @@ func main() {
 	newUser := User{Name: "Joseph", Age: "30"}
 	newChar := Char{Name: "Examplus", Str: 10, Dex: 10, Con: 10, Int: 10, Wis: 10, Cha: 10}
 
-	httpHelpers.HttpRespond("/users", newUser, host)
-	httpHelpers.HttpRespond("/char", newChar, host)
+	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", host) //can be removed once Docker is set up
+		httpHelpers.RespondWithJson(w, newUser)
+	})
+
+	http.HandleFunc("/char", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", host) //can be removed once Docker is set up
+		httpHelpers.RespondWithJson(w, newChar)
+	})
+
 	http.ListenAndServe(port, nil)
 }

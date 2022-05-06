@@ -6,18 +6,12 @@ import (
 	"net/http"
 )
 
-func HttpRespond(endpoint string, response interface{}, host string) {
-	http.HandleFunc(endpoint, func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", host) //can be removed once Docker is set up
-		w.Header().Set("content-Type", "application/json")
-		w.Write([]byte(RespondWithJson(response)))
-	})
-}
-
-func RespondWithJson(response interface{}) string {
+func RespondWithJson(w http.ResponseWriter, response interface{}) {
+	w.Header().Set("content-Type", "application/json")
 	byteArray, err := json.Marshal(response)
 	if err != nil {
 		fmt.Println(err)
 	}
-	return string(byteArray)
+	w.Write([]byte(byteArray))
+	return
 }
