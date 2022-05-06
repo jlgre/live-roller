@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type User struct {
@@ -24,7 +27,11 @@ func enableCors(w *http.ResponseWriter) {
 }
 
 func main() {
-
+	err := godotenv.Load("development.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	port := os.Getenv("PORT")
 	newUser := User{Name: "Joseph", Age: "30"}
 
 	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
@@ -32,5 +39,5 @@ func main() {
 		w.Header().Set("content-Type", "application/json")
 		w.Write([]byte(toJson(newUser)))
 	})
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(port, nil)
 }
