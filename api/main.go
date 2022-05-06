@@ -1,7 +1,36 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+type User struct {
+	Name string `json:"username"`
+	Age  string `json:"age"`
+}
+
+func toJson(x User) string {
+	byteArray, err := json.Marshal(x)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(byteArray)
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+}
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	newUser := User{Name: "Joseph", Age: "30"}
+
+	http.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+		enableCors(&w)
+		w.Header().Set("content-Type", "application/json")
+		w.Write([]byte(toJson(newUser)))
+	})
+	http.ListenAndServe(":8080", nil)
 }
