@@ -16,9 +16,8 @@ export default function Response(props) {
 
     
   useEffect(() => {
-    const getResponse = async (endpoint = "users") => {
-        let url  = "http://localhost:8080/"+endpoint;
-        const { data } = await axios(url);
+    const getResponse = async () => {
+        const { data } = await axios("/users");
         let name = data.username;
         let age = data.age;
         setName(name);
@@ -29,8 +28,7 @@ export default function Response(props) {
 
   useEffect(() => {
     const getResponse = async (endpoint) => {
-        let url  = "http://localhost:8080/"+ endpoint;
-        const { data } = await axios(url);
+        const { data } = await axios(endpoint);
         let char = await data;
         setCharacter({
           CharacterName: char.name,
