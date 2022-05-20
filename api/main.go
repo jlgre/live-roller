@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jlgre/live-roller/api/db"
 	"github.com/jlgre/live-roller/api/httpHelpers"
 	"github.com/joho/godotenv"
 )
@@ -42,5 +43,11 @@ func main() {
 		httpHelpers.RespondWithJson(w, newChar)
 	})
 
+	log.Fatal(db.Connect(
+		fmt.Sprintf("%s:%s@tcp(%s)/%s?charset-utf8mb4&parseTime=True&loc=Local",
+			os.Getenv("MYSQL_USER"),
+			os.Getenv("MYSQL_PASS"),
+			os.Getenv("MYSQL_HOST"),
+			os.Getenv("MYSQL_DB"))))
 	log.Fatal(http.ListenAndServe(port, nil))
 }
