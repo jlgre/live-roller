@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  live-roller-server:
+    build:
+      dockerfile: go.Dockerfile
+      context: api
+    volumes:
+      - ./api/:/var/www/html
+    ports:
+      - "8080:8080"
+    container_name: live-roller-srv
+  live-roller-ui:
+    build:
+      dockerfile: node.Dockerfile
+      context: ui
+    ports:
+      - "3000:3000"
+    container_name: live-roller-ui
+    volumes:
+      - ./ui/:/usr/src/app/fe
+      - /usr/src/app/fe/node_modules
+  live-roller-db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: live-roller-db
+      MYSQL_USER: live-roller-user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    container_name: live-roller-db
+    volumes:
+      - live-roller-db:/var/lib/mysql
+
+volumes:
+  live-roller-db:
